@@ -1,11 +1,19 @@
-package com.example.PaTrackPleaseBackend.User;
-import jakarta.persistence.*;
+package com.example.PaTrackPleaseBackend.User.Model;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
+    @Column(nullable = false)
+    private String Username;
+
     @Column(nullable = false)
     private String First_name;
 
@@ -21,12 +29,21 @@ public class User {
     @Column(nullable = false)
     private String confirmPassword;
 
-    public User(String first_name, String last_name, String email, String password, String confirmPassword) {
-        First_name = first_name;
-        Last_name = last_name;
+    public User(String Username, String first_name, String last_name, String email, String password, String confirmPassword) {
+        this.Username = Username;
+        this.First_name = first_name;
+        this.Last_name = last_name;
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
+    }
+
+    public String getUsername(){
+        return Username;
+    }
+
+    public void setUsername(String username ){
+        this.Username = username;
     }
 
     public String getFirst_name() {
