@@ -1,28 +1,28 @@
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+package com.example.PaTrackPleaseBackend.Register.Controller;
 
-import com.example.PaTrackPleaseBackend.User.Service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.PaTrackPleaseBackend.Register.Dto.RegisterRequest;
+import com.example.PaTrackPleaseBackend.Register.Dto.RegisterResponse;
+import com.example.PaTrackPleaseBackend.Register.Service.RegistrationService;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/register")
 @CrossOrigin(origins = "http://localhost:5173")
 public class RegisterController {
 
     @Autowired
-    private UserService userService;
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterDTO registerDTO){
-        if(!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())){
-            return ResponseEntity.badRequest().body("Passwords do not match");
-        }
-        try {
-            userService.registerUser(registerDTO);
-            return ResponseEntity.ok("User registered successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during registration: " + e.getMessage());
-        }
+    private RegistrationService registrationService;
+
+    @PostMapping
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
+
+        RegisterResponse response = registrationService.registerUser(request);
+
+        return ResponseEntity.ok(response);
     }
 
+    @
 }
