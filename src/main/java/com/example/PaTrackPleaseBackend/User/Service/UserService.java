@@ -1,4 +1,4 @@
-package com.example.PaTrackPleaseBackend.User.service;
+package com.example.PaTrackPleaseBackend.User.Service;
 
 import java.util.List;
 import java.util.Optional;

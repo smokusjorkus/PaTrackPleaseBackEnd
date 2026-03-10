@@ -1,24 +1,23 @@
 package com.example.PaTrackPleaseBackend.User.Model;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column(nullable = false)
-    private String Username;
+    private String username;
 
     @Column(nullable = false)
-    private String First_name;
+    private String firstName;
 
     @Column(nullable = false)
-    private String Last_name;
+    private String lastName;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -26,40 +25,48 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Transient
     private String confirmPassword;
 
-    public User(String Username, String first_name, String last_name, String email, String password, String confirmPassword) {
-        this.Username = Username;
-        this.First_name = first_name;
-        this.Last_name = last_name;
+    public User() {}
+
+    public User(String username, String firstName, String lastName, String email, String password, String confirmPassword) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
     }
 
-    public String getUsername(){
-        return Username;
+    // GETTERS & SETTERS
+
+    public Long getId() {
+        return id;
     }
 
-    public void setUsername(String username ){
-        this.Username = username;
+    public String getUsername() {
+        return username;
     }
 
-    public String getFirst_name() {
-        return First_name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setFirst_name(String first_name) {
-        First_name = first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getLast_name() {
-        return Last_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setLast_name(String last_name) {
-        Last_name = last_name;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
