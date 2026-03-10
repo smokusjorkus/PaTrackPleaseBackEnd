@@ -1,10 +1,12 @@
 package com.example.PaTrackPleaseBackend.Register.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.PaTrackPleaseBackend.Register.Dto.RegisterRequest;
 import com.example.PaTrackPleaseBackend.Register.Dto.RegisterResponse;
+import com.example.PaTrackPleaseBackend.Security.SecurityConfig;
 import com.example.PaTrackPleaseBackend.User.Model.User;
 import com.example.PaTrackPleaseBackend.User.Repository.UserRepository;
 
@@ -13,6 +15,9 @@ public class RegistrationService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public RegisterResponse registerUser(RegisterRequest request) {
 
@@ -33,7 +38,7 @@ public class RegistrationService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
 
