@@ -24,5 +24,4 @@ public class RegisterController {
         return ResponseEntity.ok(response);
     }
 
-    @
 }
