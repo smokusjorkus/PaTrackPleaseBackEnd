@@ -1,5 +1,6 @@
 package com.example.PaTrackPleaseBackend.User.Controller;
 
+import com.example.PaTrackPleaseBackend.User.Dto.UserResponseDto;
 import com.example.PaTrackPleaseBackend.User.Model.User;
 import com.example.PaTrackPleaseBackend.User.Repository.UserRepository;
 import com.example.PaTrackPleaseBackend.User.Service.UserService;
@@ -21,8 +22,19 @@ public class UserController {
     }
 
     @GetMapping("/email")
-    public User getUserByEmail(@RequestParam String email) {
-        return userRepository.findByEmail(email);
+    public UserResponseDto getUserByEmail(@RequestParam String email) {
+
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        return new UserResponseDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail()
+        );
     }
 
     @PostMapping
@@ -31,13 +43,27 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserResponseDto> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+
+        return users.stream()
+                .map(user -> new UserResponseDto(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail()
+                ))
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public UserResponseDto getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+
+        return new UserResponseDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail()
+        );
     }
 
     @DeleteMapping("/{id}")

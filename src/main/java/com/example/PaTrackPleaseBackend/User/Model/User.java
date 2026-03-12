@@ -1,5 +1,5 @@
 package com.example.PaTrackPleaseBackend.User.Model;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -23,9 +23,11 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     @Transient
+    @JsonIgnore
     private String confirmPassword;
 
     public User() {}
