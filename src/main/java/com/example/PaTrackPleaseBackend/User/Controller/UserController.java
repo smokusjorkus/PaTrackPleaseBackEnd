@@ -2,7 +2,6 @@ package com.example.PaTrackPleaseBackend.User.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,48 +12,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.*;
 
 import com.example.PaTrackPleaseBackend.User.Model.User;
-import com.example.PaTrackPleaseBackend.User.Repository.UserRepository;
 import com.example.PaTrackPleaseBackend.User.Service.*;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
 
     @PostMapping
-    public User createUser(@RequestBody User user){
-        System.out.println("EMAIL RECEIVED: " + user.getEmail());
+    public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
-     // GET ALL USERS
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-@GetMapping("/api/user")
-public User getUser(@RequestParam String email){
-    return userRepository.findByEmail(email);
-}
-
     // GET USER BY ID
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public UserResponseDto getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+
+        return new UserResponseDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail()
+        );
     }
 
-    // DELETE USER
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "User deleted successfully";
     }
-    
 }

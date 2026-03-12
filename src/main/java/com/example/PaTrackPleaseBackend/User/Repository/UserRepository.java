@@ -9,6 +9,8 @@ import com.example.PaTrackPleaseBackend.User.Model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
+
     boolean existsByUsername(String username);
-    User findByEmail(String Email);
+
+    User findByEmail(String email);
 }
