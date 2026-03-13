@@ -1,5 +1,10 @@
 package com.example.PaTrackPleaseBackend.User.Model;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -26,9 +31,23 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @Column(name = "created_at", nullable=false, updatable=false)
+    private LocalDateTime date_created;
+
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
+    @PrePersist
+    protected void onCreate(){
+        this.date_created = LocalDateTime.now();
+    }
+    
+
     @Transient
     @JsonIgnore
     private String confirmPassword;
+
+
 
     public User() {}
 
@@ -93,5 +112,13 @@ public class User {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public LocalDateTime getDate_created() {
+        return date_created;
+    }
+
+    public void setDate_created(LocalDateTime date_created) {
+        this.date_created = date_created;
     }
 }
