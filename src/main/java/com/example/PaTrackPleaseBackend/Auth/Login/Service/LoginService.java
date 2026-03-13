@@ -1,11 +1,11 @@
-package com.example.PaTrackPleaseBackend.Login.Service;
+package com.example.PaTrackPleaseBackend.Auth.Login.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.PaTrackPleaseBackend.Login.Dto.LoginRequest;
-import com.example.PaTrackPleaseBackend.Login.Dto.LoginResponse;
+import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginRequest;
+import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginResponse;
 import com.example.PaTrackPleaseBackend.User.Model.User;
 import com.example.PaTrackPleaseBackend.User.Repository.UserRepository;
 

@@ -1,12 +1,12 @@
-package com.example.PaTrackPleaseBackend.Login.Controller;
+package com.example.PaTrackPleaseBackend.Auth.Login.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.PaTrackPleaseBackend.Login.Dto.LoginRequest;
-import com.example.PaTrackPleaseBackend.Login.Dto.LoginResponse;
-import com.example.PaTrackPleaseBackend.Login.Service.LoginService;
+import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginRequest;
+import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginResponse;
+import com.example.PaTrackPleaseBackend.Auth.Login.Service.*;
 
 @RestController
 @RequestMapping("/api/login")

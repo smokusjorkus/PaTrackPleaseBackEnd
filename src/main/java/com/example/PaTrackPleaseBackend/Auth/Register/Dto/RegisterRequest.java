@@ -1,4 +1,4 @@
-package com.example.PaTrackPleaseBackend.Register.Dto;
+package com.example.PaTrackPleaseBackend.Auth.Register.Dto;
 
 public class RegisterRequest {
 

@@ -1,4 +1,4 @@
-package com.example.PaTrackPleaseBackend.Login.Dto;
+package com.example.PaTrackPleaseBackend.Auth.Login.Dto;
 
 public class LoginRequest {
 
