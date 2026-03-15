@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatusCode;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginRequest;
 import com.example.PaTrackPleaseBackend.User.Model.User;
 import com.example.PaTrackPleaseBackend.User.Service.UserService;
 import com.example.PaTrackPleaseBackend.User.Dto.UserUpdateDTO;
@@ -21,11 +25,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+
+
     // CREATE USER
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
+
+   
 
     // GET ALL USERS (Converted to Response DTOs to hide passwords)
     @GetMapping

@@ -18,23 +18,26 @@ public class LoginService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-   public LoginResponse loginUser(LoginRequest request) {
+    public LoginResponse loginUser(LoginRequest request) {
+        // 1. Find user by email
+        User user = userRepository.findByEmail(request.getEmail());
 
-    User user = userRepository.findByEmail(request.getEmail());
+        // 2. Check if user exists
+        if (user == null) {
+            return new LoginResponse("User does not exist.", null, null);
+        }
 
-    if (user == null) {
-        return new LoginResponse("User does not exist.", null, null);
+        // 3. Match passwords using BCrypt
+        boolean passwordMatch = passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword()
+        );
+
+        if (!passwordMatch) {
+            return new LoginResponse("Incorrect password.", null, null);
+        }
+
+        // 4. Success: Return response with username and email
+        return new LoginResponse("Logged In", user.getUsername(), user.getEmail());
     }
-
-    boolean passwordMatch = passwordEncoder.matches(
-            request.getPassword(),
-            user.getPassword()
-    );
-
-    if (!passwordMatch) {
-        return new LoginResponse("Incorrect password.", null, null);
-    }
-
-    return new LoginResponse("Logged In", user.getUsername(), user.getEmail());
-}
 }
