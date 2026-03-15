@@ -1,17 +1,23 @@
 package com.example.PaTrackPleaseBackend.User.Service;
 
-import com.example.PaTrackPleaseBackend.User.Dto.UserUpdateDTO;
-import com.example.PaTrackPleaseBackend.User.Model.User;
-import com.example.PaTrackPleaseBackend.User.Repository.UserRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.PaTrackPleaseBackend.User.Dto.UserUpdateDTO;
+import com.example.PaTrackPleaseBackend.User.Model.User;
+import com.example.PaTrackPleaseBackend.User.Repository.UserRepository;
 
 @Service
 public class UserService {
@@ -47,6 +53,44 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public String saveProfileImage(MultipartFile file) throws IOException {
+    // Define your upload directory
+    String uploadDir = "uploads/profiles/";
+    File directory = new File(uploadDir);
+    if (!directory.exists()) directory.mkdirs();
+
+    // Create a unique file name
+    String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+    Path filePath = Paths.get(uploadDir + fileName);
+    
+    // Save the file
+    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+    // Return the URL that the frontend will use to display the image
+    return "http://localhost:8080/uploads/profiles/" + fileName;
+}
+
+// Method to handle the Photo Update logic specifically
+    @Transactional
+    public User updateProfilePhoto(String email, MultipartFile file) throws IOException {
+        User existingUser = userRepository.findByEmail(email);
+        
+        if (existingUser == null) {
+            throw new RuntimeException("User not found: " + email);
+        }
+
+        // DELETE LOGIC: If file is null/empty, clear the URL
+        if (file == null || file.isEmpty()) {
+            // Optional: You could delete the old file from the disk here if you wanted
+            existingUser.setProfileImageUrl(null);
+        } else {
+            // UPDATE LOGIC: Save the file and update the path
+            String imageUrl = saveProfileImage(file);
+            existingUser.setProfileImageUrl(imageUrl);
+        }
+
+        return userRepository.save(existingUser);
+    }
     // UPDATE USER
     @Transactional
     public User updateUser(String email, UserUpdateDTO updateDto) {
@@ -84,4 +128,33 @@ public class UserService {
         // Since the ID already exists, JPA will perform an UPDATE statement
         return userRepository.save(existingUser);
     }
+
+    public String saveProfileImage(MultipartFile file) throws IOException {
+    // 1. Get the absolute path of the project root
+    String rootPath = System.getProperty("user.dir");
+    String uploadDir = rootPath + File.separator + "uploads" + File.separator + "profiles" + File.separator;
+    
+    File directory = new File(uploadDir);
+    if (!directory.exists()) {
+        boolean created = directory.mkdirs();
+        System.out.println("Directory created: " + created + " at " + uploadDir);
+    }
+
+    // 2. Create unique name
+    String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+    Path filePath = Paths.get(uploadDir + fileName);
+    
+    // 3. Log the attempt
+    System.out.println("Attempting to save file to: " + filePath.toAbsolutePath());
+
+    // 4. Save the file
+    try (var inputStream = file.getInputStream()) {
+        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+    }
+    
+    System.out.println("File saved successfully!");
+
+    // 5. Return the URL for the frontend
+    return "http://localhost:8080/uploads/profiles/" + fileName;
+}
 }

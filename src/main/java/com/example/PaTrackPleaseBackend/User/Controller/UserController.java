@@ -4,14 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatusCode;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginRequest;
 import com.example.PaTrackPleaseBackend.User.Model.User;
 import com.example.PaTrackPleaseBackend.User.Service.UserService;
 import com.example.PaTrackPleaseBackend.User.Dto.UserUpdateDTO;
@@ -25,22 +23,22 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-
-
     // CREATE USER
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
-   
-
-    // GET ALL USERS (Converted to Response DTOs to hide passwords)
+    // GET ALL USERS
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         List<UserResponseDto> users = userService.getAllUsers().stream()
-                .map(user -> new UserResponseDto(user.getId(), user.getUsername(), user.getEmail()))
+                .map(user -> new UserResponseDto(
+                    user.getId(), 
+                    user.getUsername(), 
+                    user.getEmail(), 
+                    user.getProfileImageUrl()
+                ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(users);
     }
@@ -55,7 +53,8 @@ public class UserController {
         return ResponseEntity.ok(new UserResponseDto(
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getProfileImageUrl()
         ));
     }
 
@@ -69,7 +68,8 @@ public class UserController {
         return ResponseEntity.ok(new UserResponseDto(
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getProfileImageUrl()
         ));
     }
 
@@ -84,27 +84,43 @@ public class UserController {
         }
     }
 
-    // UPDATE PROFILE
+    // UPDATE PROFILE (Username, Email, etc.)
     @PutMapping("/update")
     public ResponseEntity<?> updateProfile(
             @RequestParam("email") String email, 
             @RequestBody UserUpdateDTO updateDto 
     ) {
-        System.out.println(">>> Request Received for: " + email);
-        
         try {
             User updatedUser = userService.updateUser(email, updateDto);
-            // Return the updated user wrapped in a ResponseDTO so the password isn't sent back
             return ResponseEntity.ok(new UserResponseDto(
                     updatedUser.getId(),
                     updatedUser.getUsername(),
-                    updatedUser.getEmail()
+                    updatedUser.getEmail(),
+                    updatedUser.getProfileImageUrl()
             ));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace(); 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Backend Error: " + e.getMessage());
+        }
+    }
+
+    // UPLOAD PHOTO
+    @PostMapping("/upload-photo")
+    public ResponseEntity<?> uploadPhoto(
+            @RequestParam("email") String email, 
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+        try {
+            User updatedUser = userService.updateProfilePhoto(email, file);
+            // Return DTO so React gets the profileImageUrl field immediately
+            return ResponseEntity.ok(new UserResponseDto(
+                    updatedUser.getId(),
+                    updatedUser.getUsername(),
+                    updatedUser.getEmail(),
+                    updatedUser.getProfileImageUrl()
+            ));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload photo");
         }
     }
 }
