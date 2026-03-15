@@ -15,7 +15,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String username;
 
     @Column(nullable = false)
@@ -37,6 +37,18 @@ public class User {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+
+
     @PrePersist
     protected void onCreate(){
         this.date_created = LocalDateTime.now();
@@ -51,14 +63,7 @@ public class User {
 
     public User() {}
 
-    public User(String username, String firstName, String lastName, String email, String password, String confirmPassword) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
-    }
+
 
     // GETTERS & SETTERS
 

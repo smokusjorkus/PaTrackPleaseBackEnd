@@ -5,6 +5,7 @@ public class UserResponseDto {
     private String username;
     private Long id;
     private String email;
+    private String password;
 
     public UserResponseDto(Long id, String username, String email) {
         this.username = username;
