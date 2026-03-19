@@ -53,22 +53,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public String saveProfileImage(MultipartFile file) throws IOException {
-    // Define your upload directory
-    String uploadDir = "uploads/profiles/";
-    File directory = new File(uploadDir);
-    if (!directory.exists()) directory.mkdirs();
 
-    // Create a unique file name
-    String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-    Path filePath = Paths.get(uploadDir + fileName);
-    
-    // Save the file
-    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-    // Return the URL that the frontend will use to display the image
-    return "http://localhost:8080/uploads/profiles/" + fileName;
-}
 
 // Method to handle the Photo Update logic specifically
     @Transactional
@@ -156,5 +141,5 @@ public class UserService {
 
     // 5. Return the URL for the frontend
     return "http://localhost:8080/uploads/profiles/" + fileName;
-}
+    }
 }
