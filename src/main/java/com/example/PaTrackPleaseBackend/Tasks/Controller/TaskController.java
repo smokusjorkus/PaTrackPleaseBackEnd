@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.PaTrackPleaseBackend.Tasks.Dto.TaskCreateDto;
 import com.example.PaTrackPleaseBackend.Tasks.Dto.TaskResponseDto;
 import com.example.PaTrackPleaseBackend.Tasks.Dto.TaskUpdateDto;
 import com.example.PaTrackPleaseBackend.Tasks.Model.Tasks;
@@ -37,25 +38,28 @@ public class TaskController {
     private UserService userService;
     
 @PostMapping
-public ResponseEntity<?> createTask(@RequestParam("email") String email, @RequestBody Tasks task) {
+public ResponseEntity<?> createTask(
+        @RequestParam("email") String email,
+        @RequestBody TaskCreateDto dto
+) {
     try {
-        System.out.println("Incoming request for email: " + email);
-        
-        User user = userService.getUserByEmail(email); 
+        User user = userService.getUserByEmail(email);
         if (user == null) {
-            System.out.println("USER NOT FOUND IN DB");
             return ResponseEntity.badRequest().body("User not found");
         }
 
-        task.setUser(user); 
+        Tasks task = new Tasks();
+        task.setTaskName(dto.getTaskName());
+        task.setTaskDescription(dto.getTaskDescription());
+        task.setDueDate(dto.getDueDate());
+        task.setStatus(dto.getStatus());
+        task.setUser(user);
+
         Tasks created = taskService.createTask(task);
-        
-        System.out.println("SUCCESS: Task saved with ID: " + created.getId());
         return new ResponseEntity<>(created, HttpStatus.CREATED);
-        
+
     } catch (Exception e) {
-        // THIS IS THE MOST IMPORTANT LINE RIGHT NOW
-        e.printStackTrace(); 
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 }
