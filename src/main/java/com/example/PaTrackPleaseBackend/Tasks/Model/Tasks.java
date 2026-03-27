@@ -6,6 +6,8 @@ import com.example.PaTrackPleaseBackend.User.Model.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,20 +26,21 @@ public class Tasks {
 
     @Column(nullable = true)
     private String taskName;
-    
-    @Column(nullable= true)
+
+    @Column(nullable = true)
     private String taskDescription;
 
-    @Column(nullable=true, unique=false)
+    @Column(nullable = true, unique = false)
     private LocalDate dueDate;
 
-    @Column(nullable=true)
+    @Column(nullable = true)
     private String status;
 
-    public Tasks(){}
+    public Tasks() {
+    }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable=false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public Long getId() {

@@ -10,13 +10,13 @@ public class TaskResponseDto {
     private LocalDate dueDate;
     private String status;
 
-public TaskResponseDto(Long id, String taskName, String taskDescription, LocalDate dueDate, String status){
-    this.id = id;
-    this.taskName = taskName; 
-    this.taskDescription = taskDescription;
-    this.dueDate = dueDate;
-    this.status = status;
-}
+    public TaskResponseDto(Long id, String taskName, String taskDescription, LocalDate dueDate, String status) {
+        this.id = id;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.dueDate = dueDate;
+        this.status = status;
+    }
 
     public Long getId() {
         return id;
@@ -38,5 +38,4 @@ public TaskResponseDto(Long id, String taskName, String taskDescription, LocalDa
         return status;
     }
 
-    
 }

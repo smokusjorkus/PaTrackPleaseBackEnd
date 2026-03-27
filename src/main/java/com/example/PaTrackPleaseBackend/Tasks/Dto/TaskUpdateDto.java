@@ -3,13 +3,15 @@ package com.example.PaTrackPleaseBackend.Tasks.Dto;
 import java.time.LocalDate;
 
 public class TaskUpdateDto {
+
     private Long id;
     private String taskName;
     private String taskDescription;
     private LocalDate dueDate;
     private String status;
 
-    public TaskUpdateDto(){}
+    public TaskUpdateDto() {
+    }
 
     public String getTaskName() {
         return taskName;
@@ -31,6 +33,4 @@ public class TaskUpdateDto {
         return id;
     }
 
-
 }
-

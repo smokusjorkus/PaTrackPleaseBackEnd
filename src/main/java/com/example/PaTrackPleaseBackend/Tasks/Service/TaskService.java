@@ -20,9 +20,10 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-   public Tasks getTaskById(Long id) {
+    public Tasks getTaskById(Long id) {
         return taskRepository.findById(id).orElse(null);
     }
+
     // READ ALL
     public List<Tasks> getAllTasks() {
         return taskRepository.findAll();
@@ -42,7 +43,7 @@ public class TaskService {
     public Tasks updateTask(TaskUpdateDto updateDto, String currentUserEmail) {
         // 1. Find the task by ID from the DTO
         Tasks existingTask = taskRepository.findById(updateDto.getId())
-            .orElseThrow(() -> new RuntimeException("Task not found with id: " + updateDto.getId()));
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + updateDto.getId()));
 
         // 2. VERIFICATION: Ensure the task belongs to the user trying to edit it
         // We use .getUser() because that is the name of the field in your Tasks model

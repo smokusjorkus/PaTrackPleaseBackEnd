@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadPath + "/");
-                
+
         // Debugging line: Look at your console when you start the app!
         System.out.println("Serving files from: " + uploadPath);
     }
