@@ -1,6 +1,6 @@
 package com.example.PaTrackPleaseBackend.Alarm.Model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.example.PaTrackPleaseBackend.Tasks.Model.Tasks;
 import com.example.PaTrackPleaseBackend.User.Model.User;
@@ -13,30 +13,44 @@ public class Alarms {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = true)
     private String alarmName;
 
     @Column(nullable = false)
-    private LocalDate alarmStart;
+    private LocalDateTime alarmStart;
+
+    @Column(nullable = false)
+    private LocalDateTime alarmFinish;
 
     @Column(nullable = true)
-    private LocalDate alarmFinish;
+    private boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = true)
     private Tasks task;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // Links this alarm to a specific user
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public long getId() {
+    @Column(nullable = true)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Alarms() {
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -48,20 +62,28 @@ public class Alarms {
         this.alarmName = alarmName;
     }
 
-    public LocalDate getAlarmStart() {
+    public LocalDateTime getAlarmStart() {
         return alarmStart;
     }
 
-    public void setAlarmStart(LocalDate alarmStart) {
+    public void setAlarmStart(LocalDateTime alarmStart) {
         this.alarmStart = alarmStart;
     }
 
-    public LocalDate getAlarmFinish() {
+    public LocalDateTime getAlarmFinish() {
         return alarmFinish;
     }
 
-    public void setAlarmFinish(LocalDate alarmFinish) {
+    public void setAlarmFinish(LocalDateTime alarmFinish) {
         this.alarmFinish = alarmFinish;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public Tasks getTask() {
@@ -78,5 +100,13 @@ public class Alarms {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

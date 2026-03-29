@@ -1,12 +1,13 @@
 package com.example.PaTrackPleaseBackend.Alarm.Dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class AlarmCreateDto {
 
     private String alarmName;
-    private LocalDate alarmStart;
-    private LocalDate alarmFinish;
+    private LocalDateTime alarmStart;
+    private LocalDateTime alarmFinish;
+    private Long taskId;
 
     public AlarmCreateDto() {
     }
@@ -19,20 +20,27 @@ public class AlarmCreateDto {
         this.alarmName = alarmName;
     }
 
-    public LocalDate getAlarmStart() {
+    public LocalDateTime getAlarmStart() {
         return alarmStart;
     }
 
-    public void setAlarmStart(LocalDate alarmStart) {
+    public void setAlarmStart(LocalDateTime alarmStart) {
         this.alarmStart = alarmStart;
     }
 
-    public LocalDate getAlarmFinish() {
+    public LocalDateTime getAlarmFinish() {
         return alarmFinish;
     }
 
-    public void setAlarmFinish(LocalDate alarmFinish) {
+    public void setAlarmFinish(LocalDateTime alarmFinish) {
         this.alarmFinish = alarmFinish;
     }
 
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
 }

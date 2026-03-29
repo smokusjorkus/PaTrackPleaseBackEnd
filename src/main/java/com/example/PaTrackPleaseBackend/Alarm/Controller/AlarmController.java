@@ -6,22 +6,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.PaTrackPleaseBackend.Alarm.Dto.AlarmCreateDto;
 import com.example.PaTrackPleaseBackend.Alarm.Dto.AlarmResponseDto;
 import com.example.PaTrackPleaseBackend.Alarm.Model.Alarms;
-import com.example.PaTrackPleaseBackend.Alarm.Repository.AlarmRepository;
 import com.example.PaTrackPleaseBackend.Alarm.Service.AlarmService;
-
+import com.example.PaTrackPleaseBackend.Tasks.Model.Tasks;
+import com.example.PaTrackPleaseBackend.Tasks.Repository.TaskRepository;
 import com.example.PaTrackPleaseBackend.User.Model.User;
 import com.example.PaTrackPleaseBackend.User.Service.UserService;
 
@@ -37,12 +29,15 @@ public class AlarmController {
     private UserService userService;
 
     @Autowired
-    private AlarmRepository alarmRepository;
+    private TaskRepository taskRepository;
 
     @PostMapping
-    public ResponseEntity<?> createAlarm(@RequestParam("email") String email, @RequestBody AlarmCreateDto dto) {
+    public ResponseEntity<?> createAlarm(
+            @RequestParam("email") String email,
+            @RequestBody AlarmCreateDto dto) {
         try {
             User user = userService.getUserByEmail(email);
+
             if (user == null) {
                 return ResponseEntity.badRequest().body("User not found");
             }
@@ -51,31 +46,40 @@ public class AlarmController {
             alarm.setAlarmName(dto.getAlarmName());
             alarm.setAlarmStart(dto.getAlarmStart());
             alarm.setAlarmFinish(dto.getAlarmFinish());
-
-            // IMPORTANT: Link the alarm to the user we found
-            // Make sure your Alarms model has a setUser(User user) method!
+            alarm.setActive(true);
             alarm.setUser(user);
+
+            if (dto.getTaskId() != null) {
+                Tasks task = taskRepository.findById(dto.getTaskId()).orElse(null);
+                if (task != null) {
+                    alarm.setTask(task);
+                }
+            }
 
             Alarms created = alarmService.createAlarm(alarm);
 
-            // Return a DTO instead of the full Entity to avoid infinite recursion/leaking passwords
-            return new ResponseEntity<>(new AlarmResponseDto(
+            AlarmResponseDto response = new AlarmResponseDto(
                     created.getId(),
                     created.getAlarmName(),
                     created.getAlarmStart(),
-                    created.getAlarmFinish()
-            ), HttpStatus.CREATED);
+                    created.getAlarmFinish(),
+                    created.isActive());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating alarm: " + e.getMessage());
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<AlarmResponseDto>> getAlarms(@RequestParam(value = "email", required = false) String email) {
+    public ResponseEntity<List<AlarmResponseDto>> getAlarms(
+            @RequestParam(value = "email", required = false) String email) {
 
         List<Alarms> alarmList;
+
         if (email != null && !email.isEmpty()) {
             alarmList = alarmService.getAlarmsByEmail(email);
         } else {
@@ -84,12 +88,13 @@ public class AlarmController {
 
         List<AlarmResponseDto> alarms = alarmList.stream()
                 .map(alarm -> new AlarmResponseDto(
-                alarm.getId(),
-                alarm.getAlarmName(),
-                alarm.getAlarmStart(),
-                alarm.getAlarmFinish()
-        ))
+                        alarm.getId(),
+                        alarm.getAlarmName(),
+                        alarm.getAlarmStart(),
+                        alarm.getAlarmFinish(),
+                        alarm.isActive()))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(alarms);
     }
 
@@ -98,21 +103,28 @@ public class AlarmController {
         Alarms alarm = alarmService.getAlarmById(id);
 
         if (alarm == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found with id " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Alarm not found with id " + id);
         }
 
-        return ResponseEntity
-                .ok(new AlarmResponseDto(alarm.getId(), alarm.getAlarmName(), alarm.getAlarmStart(), alarm.getAlarmFinish()));
+        AlarmResponseDto response = new AlarmResponseDto(
+                alarm.getId(),
+                alarm.getAlarmName(),
+                alarm.getAlarmStart(),
+                alarm.getAlarmFinish(),
+                alarm.isActive());
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAlarm(@PathVariable Long id) {
         try {
             alarmService.deleteAlarm(id);
-            return ResponseEntity.ok("Task deleted Successfully");
+            return ResponseEntity.ok("Alarm deleted successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting task");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting alarm");
         }
     }
-
 }

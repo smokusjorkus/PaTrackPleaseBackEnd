@@ -38,7 +38,8 @@ public class TaskController {
     public enum TaskStatus {
         DONE,
         UPCOMING,
-        OVERDUE
+        OVERDUE,
+        IN_PROGRESS
     }
 
     @Autowired
@@ -53,8 +54,7 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<?> createTask(
             @RequestParam("email") String email,
-            @RequestBody TaskCreateDto dto
-    ) {
+            @RequestBody TaskCreateDto dto) {
         try {
             User user = userService.getUserByEmail(email);
             if (user == null) {
@@ -78,7 +78,8 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponseDto>> getTasks(@RequestParam(value = "email", required = false) String email) {
+    public ResponseEntity<List<TaskResponseDto>> getTasks(
+            @RequestParam(value = "email", required = false) String email) {
         List<Tasks> taskList;
 
         if (email != null && !email.isEmpty()) {
@@ -91,12 +92,11 @@ public class TaskController {
 
         List<TaskResponseDto> tasks = taskList.stream()
                 .map(task -> new TaskResponseDto(
-                task.getId(),
-                task.getTaskName(),
-                task.getTaskDescription(),
-                task.getDueDate(),
-                task.getStatus()
-        ))
+                        task.getId(),
+                        task.getTaskName(),
+                        task.getTaskDescription(),
+                        task.getDueDate(),
+                        task.getStatus()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(tasks);
     }
@@ -114,8 +114,7 @@ public class TaskController {
                 task.getTaskName(),
                 task.getTaskDescription(),
                 task.getDueDate(),
-                task.getStatus()
-        ));
+                task.getStatus()));
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.example.PaTrackPleaseBackend.Tasks.Model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.example.PaTrackPleaseBackend.User.Model.User;
 
@@ -14,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -35,6 +37,14 @@ public class Tasks {
 
     @Column(nullable = true)
     private String status;
+
+    @Column(nullable = true)
+    private LocalDateTime Created_at;
+
+    @PrePersist
+    protected void onCreate(){
+        this.Created_at = LocalDateTime.now();
+    }
 
     public Tasks() {
     }
