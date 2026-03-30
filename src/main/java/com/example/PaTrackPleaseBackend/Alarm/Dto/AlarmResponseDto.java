@@ -9,13 +9,16 @@ public class AlarmResponseDto {
     private LocalDateTime alarmStart;
     private LocalDateTime alarmFinish;
     private boolean isActive;
+    private Long taskId;
 
-    public AlarmResponseDto(Long id, String alarmName, LocalDateTime alarmStart, LocalDateTime alarmFinish, boolean isActive) {
+    public AlarmResponseDto(Long id, String alarmName, LocalDateTime alarmStart, LocalDateTime alarmFinish,
+            boolean isActive, Long taskId) {
         this.id = id;
         this.alarmName = alarmName;
         this.alarmStart = alarmStart;
         this.alarmFinish = alarmFinish;
         this.isActive = isActive;
+        this.taskId = taskId;
     }
 
     public Long getId() {
@@ -36,5 +39,9 @@ public class AlarmResponseDto {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public Long getTaskId() {
+        return taskId;
     }
 }

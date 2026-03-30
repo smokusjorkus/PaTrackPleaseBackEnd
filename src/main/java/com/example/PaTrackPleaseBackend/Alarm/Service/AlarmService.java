@@ -1,6 +1,5 @@
 package com.example.PaTrackPleaseBackend.Alarm.Service;
 
-import com.example.PaTrackPleaseBackend.Tasks.Repository.TaskRepository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,8 @@ public class AlarmService {
     }
 
     public Alarms getAlarmById(Long id) {
-        return alarmRepository.findById(id).orElseThrow(() -> new RuntimeException("Alarm not found with id: " + id));
+        return alarmRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Alarm not found with id: " + id));
     }
 
     public List<Alarms> getAllAlarms() {
@@ -34,7 +34,11 @@ public class AlarmService {
         return alarmRepository.findByUserEmail(email);
     }
 
-    @Transactional // Added this for safe deletion
+    public List<Alarms> getAlarmsByTaskId(Long taskId) {
+        return alarmRepository.findByTaskId(taskId);
+    }
+
+    @Transactional
     public void deleteAlarm(Long id) {
         if (!alarmRepository.existsById(id)) {
             throw new RuntimeException("Cannot delete: Alarm not found with id: " + id);

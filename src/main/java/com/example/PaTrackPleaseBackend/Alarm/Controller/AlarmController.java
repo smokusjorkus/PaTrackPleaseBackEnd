@@ -36,6 +36,7 @@ public class AlarmController {
             @RequestParam("email") String email,
             @RequestBody AlarmCreateDto dto) {
         try {
+            System.out.println("Incoming taskId: " + dto.getTaskId());
             User user = userService.getUserByEmail(email);
 
             if (user == null) {
@@ -59,11 +60,12 @@ public class AlarmController {
             Alarms created = alarmService.createAlarm(alarm);
 
             AlarmResponseDto response = new AlarmResponseDto(
-                    created.getId(),
-                    created.getAlarmName(),
-                    created.getAlarmStart(),
-                    created.getAlarmFinish(),
-                    created.isActive());
+                    alarm.getId(),
+                    alarm.getAlarmName(),
+                    alarm.getAlarmStart(),
+                    alarm.getAlarmFinish(),
+                    alarm.isActive(),
+                    alarm.getTask() != null ? alarm.getTask().getId() : null);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
@@ -92,7 +94,8 @@ public class AlarmController {
                         alarm.getAlarmName(),
                         alarm.getAlarmStart(),
                         alarm.getAlarmFinish(),
-                        alarm.isActive()))
+                        alarm.isActive(),
+                        alarm.getTask() != null ? alarm.getTask().getId() : null))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(alarms);
@@ -112,9 +115,27 @@ public class AlarmController {
                 alarm.getAlarmName(),
                 alarm.getAlarmStart(),
                 alarm.getAlarmFinish(),
-                alarm.isActive());
+                alarm.isActive(),
+                alarm.getTask() != null ? alarm.getTask().getId() : null);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/task/{taskId}")
+    public ResponseEntity<List<AlarmResponseDto>> getAlarmsByTaskId(@PathVariable Long taskId) {
+        List<Alarms> alarmList = alarmService.getAlarmsByTaskId(taskId);
+
+        List<AlarmResponseDto> alarms = alarmList.stream()
+                .map(alarm -> new AlarmResponseDto(
+                        alarm.getId(),
+                        alarm.getAlarmName(),
+                        alarm.getAlarmStart(),
+                        alarm.getAlarmFinish(),
+                        alarm.isActive(),
+                        alarm.getTask() != null ? alarm.getTask().getId() : null))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(alarms);
     }
 
     @DeleteMapping("/{id}")

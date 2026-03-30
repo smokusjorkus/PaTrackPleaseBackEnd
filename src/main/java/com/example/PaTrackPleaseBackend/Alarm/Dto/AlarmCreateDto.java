@@ -3,7 +3,6 @@ package com.example.PaTrackPleaseBackend.Alarm.Dto;
 import java.time.LocalDateTime;
 
 public class AlarmCreateDto {
-
     private String alarmName;
     private LocalDateTime alarmStart;
     private LocalDateTime alarmFinish;

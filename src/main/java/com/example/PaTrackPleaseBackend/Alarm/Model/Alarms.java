@@ -18,21 +18,21 @@ public class Alarms {
     @Column(nullable = true)
     private String alarmName;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime alarmStart;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime alarmFinish;
 
     @Column(nullable = true)
-    private boolean isActive = true;
+    private Boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = true)
     private Tasks task;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     @Column(nullable = true)
