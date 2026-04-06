@@ -2,8 +2,10 @@ package com.example.PaTrackPleaseBackend.Tasks.Model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.example.PaTrackPleaseBackend.User.Model.User;
+import com.example.PaTrackPleaseBackend.Alarm.Model.Alarms;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +19,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 
 @Entity
 @Table(name = "tasks")
@@ -42,12 +46,15 @@ public class Tasks {
     private LocalDateTime Created_at;
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         this.Created_at = LocalDateTime.now();
     }
 
     public Tasks() {
     }
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Alarms> alarms;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
