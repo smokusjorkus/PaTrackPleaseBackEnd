@@ -27,7 +27,9 @@ import com.example.PaTrackPleaseBackend.Tasks.Model.Tasks;
 import com.example.PaTrackPleaseBackend.Tasks.Repository.TaskRepository;
 import com.example.PaTrackPleaseBackend.User.Model.User;
 import com.example.PaTrackPleaseBackend.Tasks.Service.TaskService;
+import com.example.PaTrackPleaseBackend.User.Repository.UserRepository;
 import com.example.PaTrackPleaseBackend.User.Service.UserService;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -39,7 +41,8 @@ public class TaskController {
         DONE,
         UPCOMING,
         OVERDUE,
-        IN_PROGRESS
+        IN_PROGRESS,
+        PENDING
     }
 
     @Autowired
@@ -50,6 +53,9 @@ public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping
     public ResponseEntity<?> createTask(
@@ -80,14 +86,25 @@ public class TaskController {
     @GetMapping
     public ResponseEntity<List<TaskResponseDto>> getTasks(
             @RequestParam(value = "email", required = false) String email) {
+
         List<Tasks> taskList;
 
         if (email != null && !email.isEmpty()) {
-            // Filter by email using the service method we discussed
             taskList = taskService.getTasksByEmail(email);
         } else {
-            // Fallback: get all tasks if no email is provided
             taskList = taskService.getAllTasks();
+        }
+
+        LocalDate today = LocalDate.now();
+
+        for (Tasks task : taskList) {
+            if (task.getDueDate() != null &&
+                    task.getDueDate().isBefore(today) &&
+                    !"DONE".equalsIgnoreCase(task.getStatus())) {
+
+                task.setStatus("OVERDUE");
+                taskRepository.save(task);
+            }
         }
 
         List<TaskResponseDto> tasks = taskList.stream()
@@ -98,6 +115,7 @@ public class TaskController {
                         task.getDueDate(),
                         task.getStatus()))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(tasks);
     }
 
@@ -127,15 +145,14 @@ public class TaskController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateTask(@RequestParam("email") String email, @RequestBody TaskUpdateDto updateDto) {
-        try {
-            // Call taskService, passing the DTO and the user email for verification
-            Tasks updatedTask = taskService.updateTask(updateDto, email);
-            return ResponseEntity.ok(updatedTask);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<?> updateTask(
+            @PathVariable Long id,
+            @RequestBody TaskUpdateDto updateDto,
+            @RequestParam String email) {
+
+        Tasks updated = taskService.updateTask(updateDto, email);
+        return ResponseEntity.ok(updated);
     }
 
     @PutMapping("/{id}/status")
