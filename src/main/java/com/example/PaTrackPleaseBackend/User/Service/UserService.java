@@ -27,6 +27,7 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     // CREATE USER
     public User createUser(User user) {
         return userRepository.save(user);
@@ -45,7 +46,7 @@ public class UserService {
 
     // GET USER BY EMAIL
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     // DELETE USER
@@ -53,13 +54,11 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-
-
-// Method to handle the Photo Update logic specifically
+    // Method to handle the Photo Update logic specifically
     @Transactional
     public User updateProfilePhoto(String email, MultipartFile file) throws IOException {
-        User existingUser = userRepository.findByEmail(email);
-        
+        User existingUser = userRepository.findByEmail(email).orElse(null);
+
         if (existingUser == null) {
             throw new RuntimeException("User not found: " + email);
         }
@@ -76,17 +75,18 @@ public class UserService {
 
         return userRepository.save(existingUser);
     }
+
     // UPDATE USER
     @Transactional
     public User updateUser(String email, UserUpdateDTO updateDto) {
-        User existingUser = userRepository.findByEmail(email);
-        
+        User existingUser = userRepository.findByEmail(email).orElse(null);
+
         if (existingUser == null) {
             throw new RuntimeException("User not found: " + email);
         }
 
         // 2. Perform safe, conditional field mapping from DTO to Entity
-        
+
         // Update Username
         if (updateDto.getUsername() != null && !updateDto.getUsername().isEmpty()) {
             existingUser.setUsername(updateDto.getUsername());
@@ -115,31 +115,31 @@ public class UserService {
     }
 
     public String saveProfileImage(MultipartFile file) throws IOException {
-    // 1. Get the absolute path of the project root
-    String rootPath = System.getProperty("user.dir");
-    String uploadDir = rootPath + File.separator + "uploads" + File.separator + "profiles" + File.separator;
-    
-    File directory = new File(uploadDir);
-    if (!directory.exists()) {
-        boolean created = directory.mkdirs();
-        System.out.println("Directory created: " + created + " at " + uploadDir);
-    }
+        // 1. Get the absolute path of the project root
+        String rootPath = System.getProperty("user.dir");
+        String uploadDir = rootPath + File.separator + "uploads" + File.separator + "profiles" + File.separator;
 
-    // 2. Create unique name
-    String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-    Path filePath = Paths.get(uploadDir + fileName);
-    
-    // 3. Log the attempt
-    System.out.println("Attempting to save file to: " + filePath.toAbsolutePath());
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            System.out.println("Directory created: " + created + " at " + uploadDir);
+        }
 
-    // 4. Save the file
-    try (var inputStream = file.getInputStream()) {
-        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-    }
-    
-    System.out.println("File saved successfully!");
+        // 2. Create unique name
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir + fileName);
 
-    // 5. Return the URL for the frontend
-    return "http://localhost:8080/uploads/profiles/" + fileName;
+        // 3. Log the attempt
+        System.out.println("Attempting to save file to: " + filePath.toAbsolutePath());
+
+        // 4. Save the file
+        try (var inputStream = file.getInputStream()) {
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        System.out.println("File saved successfully!");
+
+        // 5. Return the URL for the frontend
+        return "http://localhost:8080/uploads/profiles/" + fileName;
     }
 }

@@ -5,11 +5,13 @@ public class LoginResponse {
     private String message;
     private String username;
     private String email;
+    private String token; // ← add this
 
-    public LoginResponse(String message, String username, String email) {
+    public LoginResponse(String message, String username, String email, String token) {
         this.message = message;
         this.username = username;
         this.email = email;
+        this.token = token;
     }
 
     public String getMessage() {
@@ -36,4 +38,11 @@ public class LoginResponse {
         this.email = email;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

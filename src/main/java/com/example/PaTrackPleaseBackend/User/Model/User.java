@@ -1,4 +1,5 @@
 package com.example.PaTrackPleaseBackend.User.Model;
+
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -31,7 +32,7 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @Column(name = "created_at", nullable=false, updatable=false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime date_created;
 
     @Column(name = "profile_image_url")
@@ -41,29 +42,21 @@ public class User {
         return profileImageUrl;
     }
 
-
-
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
 
-
-
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         this.date_created = LocalDateTime.now();
     }
-    
 
     @Transient
     @JsonIgnore
     private String confirmPassword;
 
-
-
-    public User() {}
-
-
+    public User() {
+    }
 
     // GETTERS & SETTERS
 
