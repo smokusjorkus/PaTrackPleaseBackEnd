@@ -11,7 +11,6 @@ import com.example.PaTrackPleaseBackend.Auth.Login.Service.LoginService;
 
 @RestController
 @RequestMapping("/api/login")
-@CrossOrigin(origins = "http://localhost:5173")
 public class LoginController {
 
     @Autowired

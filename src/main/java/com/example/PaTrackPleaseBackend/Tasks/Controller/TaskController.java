@@ -33,8 +33,6 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/tasks")
-@CrossOrigin(origins = "http://localhost:5173")
-
 public class TaskController {
 
     public enum TaskStatus {

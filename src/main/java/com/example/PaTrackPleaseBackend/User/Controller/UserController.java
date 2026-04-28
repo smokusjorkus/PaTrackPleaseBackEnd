@@ -17,7 +17,6 @@ import com.example.PaTrackPleaseBackend.User.Dto.UserResponseDto;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     @Autowired
@@ -34,11 +33,10 @@ public class UserController {
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         List<UserResponseDto> users = userService.getAllUsers().stream()
                 .map(user -> new UserResponseDto(
-                    user.getId(), 
-                    user.getUsername(), 
-                    user.getEmail(), 
-                    user.getProfileImageUrl()
-                ))
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getProfileImageUrl()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(users);
     }
@@ -54,8 +52,7 @@ public class UserController {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getProfileImageUrl()
-        ));
+                user.getProfileImageUrl()));
     }
 
     // GET USER BY ID
@@ -69,8 +66,7 @@ public class UserController {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getProfileImageUrl()
-        ));
+                user.getProfileImageUrl()));
     }
 
     // DELETE USER
@@ -87,17 +83,15 @@ public class UserController {
     // UPDATE PROFILE (Username, Email, etc.)
     @PutMapping("/update")
     public ResponseEntity<?> updateProfile(
-            @RequestParam("email") String email, 
-            @RequestBody UserUpdateDTO updateDto 
-    ) {
+            @RequestParam("email") String email,
+            @RequestBody UserUpdateDTO updateDto) {
         try {
             User updatedUser = userService.updateUser(email, updateDto);
             return ResponseEntity.ok(new UserResponseDto(
                     updatedUser.getId(),
                     updatedUser.getUsername(),
                     updatedUser.getEmail(),
-                    updatedUser.getProfileImageUrl()
-            ));
+                    updatedUser.getProfileImageUrl()));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
@@ -108,7 +102,7 @@ public class UserController {
     // UPLOAD PHOTO
     @PostMapping("/upload-photo")
     public ResponseEntity<?> uploadPhoto(
-            @RequestParam("email") String email, 
+            @RequestParam("email") String email,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
             User updatedUser = userService.updateProfilePhoto(email, file);
@@ -117,8 +111,7 @@ public class UserController {
                     updatedUser.getId(),
                     updatedUser.getUsername(),
                     updatedUser.getEmail(),
-                    updatedUser.getProfileImageUrl()
-            ));
+                    updatedUser.getProfileImageUrl()));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload photo");
         }

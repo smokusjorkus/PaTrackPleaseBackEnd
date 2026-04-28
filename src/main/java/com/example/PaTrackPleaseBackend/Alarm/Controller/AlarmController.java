@@ -19,7 +19,7 @@ import com.example.PaTrackPleaseBackend.User.Service.UserService;
 
 @RestController
 @RequestMapping("/api/alarms")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class AlarmController {
 
     @Autowired
