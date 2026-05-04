@@ -49,6 +49,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String authHeader = request.getHeader("Authorization");
+        System.out.println("AUTH HEADER RECEIVED: " + authHeader);
+        System.out.println("ALL HEADERS: " + java.util.Collections.list(request.getHeaderNames()));
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             System.out.println("No JWT token found ");
