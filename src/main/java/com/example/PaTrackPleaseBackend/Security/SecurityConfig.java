@@ -31,13 +31,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Public endpoints (Login/Register)
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // ← ADD THIS
                         .requestMatchers("/api/auth/**", "/api/login", "/api/register").permitAll()
-
-                        // 2. Allow everyone to see profile pictures
                         .requestMatchers("/uploads/**").permitAll()
-
-                        // 3. Protect everything else
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
