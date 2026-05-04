@@ -115,7 +115,6 @@ public class UserService {
     }
 
     public String saveProfileImage(MultipartFile file) throws IOException {
-        // 1. Get the absolute path of the project root
         String rootPath = System.getProperty("user.dir");
         String uploadDir = rootPath + File.separator + "uploads" + File.separator + "profiles" + File.separator;
 
@@ -125,21 +124,17 @@ public class UserService {
             System.out.println("Directory created: " + created + " at " + uploadDir);
         }
 
-        // 2. Create unique name
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         Path filePath = Paths.get(uploadDir + fileName);
 
-        // 3. Log the attempt
         System.out.println("Attempting to save file to: " + filePath.toAbsolutePath());
 
-        // 4. Save the file
         try (var inputStream = file.getInputStream()) {
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
 
         System.out.println("File saved successfully!");
 
-        // 5. Return the URL for the frontend
-        return "http://localhost:8080/uploads/profiles/" + fileName;
+        return "/uploads/profiles/" + fileName;
     }
 }

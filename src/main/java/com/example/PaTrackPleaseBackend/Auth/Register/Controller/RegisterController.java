@@ -10,7 +10,7 @@ import com.example.PaTrackPleaseBackend.Auth.Register.Service.RegistrationServic
 
 @RestController
 @RequestMapping("/api/register")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class RegisterController {
 
     @Autowired
@@ -18,10 +18,7 @@ public class RegisterController {
 
     @PostMapping
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
-
         RegisterResponse response = registrationService.registerUser(request);
-
         return ResponseEntity.ok(response);
     }
-
 }
