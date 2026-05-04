@@ -8,7 +8,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
-
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     // CREATE USER
     public User createUser(User user) {
@@ -115,26 +119,9 @@ public class UserService {
     }
 
     public String saveProfileImage(MultipartFile file) throws IOException {
-        String rootPath = System.getProperty("user.dir");
-        String uploadDir = rootPath + File.separator + "uploads" + File.separator + "profiles" + File.separator;
-
-        File directory = new File(uploadDir);
-        if (!directory.exists()) {
-            boolean created = directory.mkdirs();
-            System.out.println("Directory created: " + created + " at " + uploadDir);
-        }
-
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir + fileName);
-
-        System.out.println("Attempting to save file to: " + filePath.toAbsolutePath());
-
-        try (var inputStream = file.getInputStream()) {
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        System.out.println("File saved successfully!");
-
-        return "/uploads/profiles/" + fileName;
+        var uploadResult = cloudinary.uploader().upload(
+                file.getBytes(),
+                ObjectUtils.asMap("folder", "profiles"));
+        return (String) uploadResult.get("secure_url");
     }
 }
