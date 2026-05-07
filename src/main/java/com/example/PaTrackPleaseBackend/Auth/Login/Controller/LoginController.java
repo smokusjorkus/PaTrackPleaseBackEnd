@@ -10,7 +10,7 @@ import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginResponse;
 import com.example.PaTrackPleaseBackend.Auth.Login.Service.LoginService;
 
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api/auth/login")
 public class LoginController {
 
     @Autowired

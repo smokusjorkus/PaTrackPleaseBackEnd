@@ -10,7 +10,7 @@ import com.example.PaTrackPleaseBackend.Auth.Register.Dto.RegisterResponse;
 import com.example.PaTrackPleaseBackend.Auth.Register.Service.RegistrationService;
 
 @RestController
-@RequestMapping("/api/register")
+@RequestMapping("/api/auth/register")
 public class RegisterController {
 
     @Autowired
