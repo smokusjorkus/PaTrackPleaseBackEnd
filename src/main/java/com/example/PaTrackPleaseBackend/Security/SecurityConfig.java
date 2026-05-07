@@ -1,9 +1,10 @@
 package com.example.PaTrackPleaseBackend.Security;
 
-import org.springframework.http.HttpMethod;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     @Autowired
-    private CorsConfigurationSource corsConfigurationSource; // Injected from your CorsConfig file
+    private CorsConfigurationSource corsConfigurationSource;
 
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
@@ -39,7 +40,13 @@ public class SecurityConfig {
                         .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            System.out.println("BLOCKED BY SECURITY: " + request.getRequestURI());
+                            System.out.println("REASON: " + authException.getMessage());
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+                        }));
 
         return http.build();
     }
