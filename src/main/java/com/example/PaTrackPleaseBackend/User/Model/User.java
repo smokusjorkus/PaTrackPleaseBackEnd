@@ -1,8 +1,7 @@
 package com.example.PaTrackPleaseBackend.User.Model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -29,7 +28,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -51,9 +50,9 @@ public class User {
         this.date_created = LocalDateTime.now();
     }
 
-    @Transient
-    @JsonIgnore
-    private String confirmPassword;
+    // @Transient
+    // @JsonIgnore
+    // private String confirmPassword;
 
     public User() {
     }
@@ -104,13 +103,13 @@ public class User {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
+    // public String getConfirmPassword() {
+    // return confirmPassword;
+    // }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
+    // public void setConfirmPassword(String confirmPassword) {
+    // this.confirmPassword = confirmPassword;
+    // }
 
     public LocalDateTime getDate_created() {
         return date_created;
