@@ -33,16 +33,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        // Bypass JWT for public routes and OPTIONS preflight
+        // 1. Simplified Bypass logic
+        // We let Spring Security's global CORS config handle the headers!
         if (method.equals("OPTIONS") ||
                 path.equals("/api/register") ||
                 path.equals("/api/login") ||
                 path.startsWith("/api/auth/")) {
-
-            response.setHeader("Access-Control-Allow-Origin", "https://patrackpleasefrontend.onrender.com");
-            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            response.setHeader("Access-Control-Allow-Headers", "*");
-            response.setHeader("Access-Control-Allow-Credentials", "true");
 
             filterChain.doFilter(request, response);
             return;
