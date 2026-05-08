@@ -21,9 +21,9 @@ public class RegistrationService {
 
     public RegisterResponse registerUser(RegisterRequest request) {
 
-        // if(!request.getPassword().equals(request.getConfirmPassword())) {
-        // throw new RuntimeException("Passwords do not match");
-        // }
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("Passwords do not match");
+        }
 
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
