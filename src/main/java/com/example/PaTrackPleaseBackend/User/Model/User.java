@@ -50,9 +50,9 @@ public class User {
         this.date_created = LocalDateTime.now();
     }
 
-    // @Transient
-    // @JsonIgnore
-    // private String confirmPassword;
+    @Transient
+    @JsonIgnore
+    private String confirmPassword;
 
     public User() {
     }
@@ -103,13 +103,13 @@ public class User {
         this.password = password;
     }
 
-    // public String getConfirmPassword() {
-    // return confirmPassword;
-    // }
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
 
-    // public void setConfirmPassword(String confirmPassword) {
-    // this.confirmPassword = confirmPassword;
-    // }
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 
     public LocalDateTime getDate_created() {
         return date_created;
