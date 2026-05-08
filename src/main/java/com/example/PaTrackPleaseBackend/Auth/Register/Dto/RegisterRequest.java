@@ -7,9 +7,10 @@ public class RegisterRequest {
     private String lastName;
     private String email;
     private String password;
-    private String confirmPassword;
+    // private String confirmPassword;
 
-    public RegisterRequest() {}
+    public RegisterRequest() {
+    }
 
     public String getUsername() {
         return username;
@@ -51,11 +52,11 @@ public class RegisterRequest {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
+    // public String getConfirmPassword() {
+    // return confirmPassword;
+    // }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
+    // public void setConfirmPassword(String confirmPassword) {
+    // this.confirmPassword = confirmPassword;
+    // }
 }
