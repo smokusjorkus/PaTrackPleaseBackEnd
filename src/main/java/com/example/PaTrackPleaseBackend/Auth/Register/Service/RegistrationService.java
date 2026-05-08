@@ -33,7 +33,7 @@ public class RegistrationService {
             throw new RuntimeException("Username already exists");
         }
 
-        User user = new User();s
+        User user = new User();
         user.setUsername(request.getUsername());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
