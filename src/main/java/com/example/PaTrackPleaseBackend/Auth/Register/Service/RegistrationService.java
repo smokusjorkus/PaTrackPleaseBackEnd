@@ -21,19 +21,19 @@ public class RegistrationService {
 
     public RegisterResponse registerUser(RegisterRequest request) {
 
-        if(!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("Passwords do not match");
-        }
+        // if(!request.getPassword().equals(request.getConfirmPassword())) {
+        // throw new RuntimeException("Passwords do not match");
+        // }
 
-        if(userRepository.existsByEmail(request.getEmail())){
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
 
-        if(userRepository.existsByUsername(request.getUsername())){
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
 
-        User user = new User();
+        User user = new User();s
         user.setUsername(request.getUsername());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -46,7 +46,6 @@ public class RegistrationService {
                 "User registered successfully",
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
-        );
+                user.getEmail());
     }
 }
