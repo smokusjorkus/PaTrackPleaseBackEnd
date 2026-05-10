@@ -1,48 +1,25 @@
 package com.example.PaTrackPleaseBackend.Auth.Login.Dto;
 
 public class LoginResponse {
-
     private String message;
-    private String username;
-    private String email;
-    private String token; // ← add this
+    private String token;
+    private UserDataResponse user; // This creates the "user": { ... } block in JSON
 
-    public LoginResponse(String message, String username, String email, String token) {
+    public LoginResponse(String message, String token, UserDataResponse user) {
         this.message = message;
-        this.username = username;
-        this.email = email;
         this.token = token;
+        this.user = user;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getToken() {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public UserDataResponse getUser() {
+        return user;
     }
 }

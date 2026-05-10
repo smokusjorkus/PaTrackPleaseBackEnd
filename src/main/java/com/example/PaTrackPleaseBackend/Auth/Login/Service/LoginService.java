@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginRequest;
 import com.example.PaTrackPleaseBackend.Auth.Login.Dto.LoginResponse;
+import com.example.PaTrackPleaseBackend.Auth.Login.Dto.UserDataResponse;
 import com.example.PaTrackPleaseBackend.Security.JwtUtil;
 import com.example.PaTrackPleaseBackend.User.Model.User;
 import com.example.PaTrackPleaseBackend.User.Repository.UserRepository;
@@ -23,28 +24,29 @@ public class LoginService {
     private JwtUtil jwtUtil; // ← add this
 
     public LoginResponse loginUser(LoginRequest request) {
-        // 1. Find user by email
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElse(null); // ← updated for Optional
+        // 1. Find user
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
-        // 2. Check if user exists
         if (user == null) {
-            return new LoginResponse("User does not exist.", null, null, null);
+            return new LoginResponse("User does not exist.", null, null);
         }
 
-        // 3. Match passwords using BCrypt
-        boolean passwordMatch = passwordEncoder.matches(
-                request.getPassword(),
-                user.getPassword());
-
-        if (!passwordMatch) {
-            return new LoginResponse("Incorrect password.", null, null, null);
+        // 2. Validate Password
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return new LoginResponse("Incorrect password.", null, null);
         }
 
-        // 4. Generate JWT token using email as the principal
-        String token = jwtUtil.generateToken(user.getEmail()); // ← add this
+        // 3. Generate Token
+        String token = jwtUtil.generateToken(user.getEmail());
 
-        // 5. Success
-        return new LoginResponse("Logged In", user.getUsername(), user.getEmail(), token);
+        // 4. Wrap User Data for the nested JSON structure
+        UserDataResponse userData = new UserDataResponse(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail());
+
+        // 5. Return the full synchronized response
+        return new LoginResponse("Logged In", token, userData);
     }
 }
