@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.PaTrackPleaseBackend.Tasks.Dto.TaskCreateDto;
 import com.example.PaTrackPleaseBackend.Tasks.Dto.TaskResponseDto;
 import com.example.PaTrackPleaseBackend.Tasks.Dto.TaskUpdateDto;
+import com.example.PaTrackPleaseBackend.Tasks.Dto.DashboardMetricsDto;
 import com.example.PaTrackPleaseBackend.Tasks.Model.Tasks;
 import com.example.PaTrackPleaseBackend.Tasks.Repository.TaskRepository;
 import com.example.PaTrackPleaseBackend.User.Model.User;
@@ -167,5 +168,30 @@ public class TaskController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/metrics")
+    public ResponseEntity<DashboardMetricsDto> getDashboardMetrics(
+            @RequestParam(value = "email") String email) {
+
+        // 1. Fetch the tasks for this user
+        List<Tasks> taskList = taskService.getTasksByEmail(email);
+
+        // 2. Run the counting logic
+        long completed = taskList.stream()
+                .filter(t -> "DONE".equalsIgnoreCase(t.getStatus()))
+                .count();
+
+        long overdue = taskList.stream()
+                .filter(t -> "OVERDUE".equalsIgnoreCase(t.getStatus()))
+                .count();
+
+        long total = taskList.size();
+
+        // Pending = anything not Done or Overdue (Upcoming/In Progress)
+        long pending = total - completed - overdue;
+
+        // 3. Return the single Object (The Curly Braces {} logic)
+        return ResponseEntity.ok(new DashboardMetricsDto(completed, pending, overdue, total));
     }
 }
